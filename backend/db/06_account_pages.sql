@@ -1,0 +1,7 @@
+ALTER TABLE users
+  ADD COLUMN province VARCHAR(100),
+  ADD COLUMN city     VARCHAR(100),
+  ADD COLUMN barangay VARCHAR(100),
+  ADD COLUMN street   VARCHAR(200);
+
+ALTER TABLE orders ADD COLUMN fulfilled_at TIMESTAMPTZ;
