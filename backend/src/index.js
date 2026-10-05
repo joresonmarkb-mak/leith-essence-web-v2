@@ -7,6 +7,7 @@ import noteRoutes from "./routes/notes.js";
 import perfumeRoutes from "./routes/perfumes.js";
 import batchRoutes from "./routes/batches.js";
 import ownerRoutes from "./routes/owner.js";
+import orderRoutes from "./routes/orders.js";
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.use("/api/notes", noteRoutes);
 app.use("/api/perfumes", perfumeRoutes);
 app.use("/api/batches", batchRoutes);
 app.use("/api/owners", ownerRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)
