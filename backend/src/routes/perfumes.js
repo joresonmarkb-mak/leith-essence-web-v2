@@ -11,7 +11,7 @@ const fail = (res, err) => {
 // One perfume with its 3 notes packed into a JSON list, in order
 const PERFUME_SQL = `
   SELECT p.id, p.name, p.inspired_by AS "inspiredBy", p.description,
-         p.category, p.intensity, p.image_url AS "imageUrl",
+                  p.category, p.intensity, p.when_to_wear AS "whenToWear", p.image_url AS "imageUrl",
          COALESCE(
            json_agg(json_build_object('id', n.id, 'name', n.name, 'imageUrl', n.image_url)
                     ORDER BY pn.position) FILTER (WHERE n.id IS NOT NULL),
@@ -31,6 +31,9 @@ function validate(body) {
   if (!Array.isArray(noteIds) || noteIds.length !== 3 ||
       !noteIds.every(Number.isInteger) || new Set(noteIds).size !== 3)
     return "Pick exactly 3 different main notes.";
+      const wear = body.whenToWear ?? [];
+  if (!Array.isArray(wear) || !wear.every((w) => ["cool", "summer", "day", "night"].includes(w)))
+    return "When to wear can include cool, summer, day, and night.";
   return null;
 }
 
@@ -68,14 +71,14 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
   const problem = validate(body);
   if (problem) return res.status(400).json({ error: problem });
 
-  const { name, inspiredBy, description, category, intensity, imageUrl, noteIds } = body;
+  const { name, inspiredBy, description, category, intensity, imageUrl, noteIds, whenToWear } = body;
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
     const { rows } = await client.query(
-      `INSERT INTO perfumes (name, inspired_by, description, category, intensity, image_url)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      [name.trim(), inspiredBy || null, description || null, category, intensity, imageUrl || null]
+      `INSERT INTO perfumes (name, inspired_by, description, category, intensity, image_url,when_to_wear)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [name.trim(), inspiredBy || null, description || null, category, intensity, imageUrl || null, whenToWear ?? []]
     );
     await client.query(NOTES_SQL, [rows[0].id, noteIds]);
     await client.query("COMMIT");
@@ -98,17 +101,17 @@ router.put("/:id", requireAuth, requireAdmin, async (req, res) => {
   const problem = validate(body);
   if (problem) return res.status(400).json({ error: problem });
 
-  const { name, inspiredBy, description, category, intensity, imageUrl, noteIds } = body;
+  const { name, inspiredBy, description, category, intensity, imageUrl, noteIds,whenToWear } = body;
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    const { rowCount } = await client.query(
-      `UPDATE perfumes
-       SET name = $1, inspired_by = $2, description = $3, category = $4,
-           intensity = $5, image_url = $6
-       WHERE id = $7`,
-      [name.trim(), inspiredBy || null, description || null, category, intensity, imageUrl || null, id]
-    );
+        const { rowCount } = await client.query(
+            `UPDATE perfumes
+            SET name = $1, inspired_by = $2, description = $3, category = $4,
+                intensity = $5, image_url = $6, when_to_wear = $7
+            WHERE id = $8`,
+            [name.trim(), inspiredBy || null, description || null, category, intensity, imageUrl || null, whenToWear ?? [], id]
+          );
     if (!rowCount) {
       await client.query("ROLLBACK");
       return res.status(404).json({ error: "Perfume not found." });
