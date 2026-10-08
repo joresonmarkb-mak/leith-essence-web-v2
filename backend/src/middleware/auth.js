@@ -1,14 +1,29 @@
 import jwt from "jsonwebtoken";
+import { pool } from "../db.js";
 
-export function requireAuth(req, res, next) {
+export async function requireAuth(req, res, next) {
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
   if (!token) return res.status(401).json({ error: "Log in to continue." });
+
+  let payload;
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
-    next();
+    payload = jwt.verify(token, process.env.JWT_SECRET);
   } catch {
-    res.status(401).json({ error: "Your session expired. Log in again." });
+    return res.status(401).json({ error: "Your session expired. Log in again." });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      "SELECT id, role, is_active FROM users WHERE id = $1", [payload.id]);
+    const user = rows[0];
+    if (!user || !user.is_active)
+      return res.status(401).json({ error: "Your account isn't active. Contact us for help." });
+    req.user = { id: user.id, role: user.role };
+    next();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong. Try again." });
   }
 }
 

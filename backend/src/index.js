@@ -11,6 +11,8 @@ import orderRoutes from "./routes/orders.js";
 import shopRoutes from "./routes/shop.js";
 import cartRoutes from "./routes/cart.js";
 import voucherRoutes from "./routes/vouchers.js";
+import userRoutes from "./routes/users.js";
+import cashflowRoutes from "./routes/cashflow.js";
 
 const app = express();
 app.use(cors());
@@ -30,6 +32,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/shop", shopRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/vouchers", voucherRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/cashflow", cashflowRoutes);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)

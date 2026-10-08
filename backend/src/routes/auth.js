@@ -16,6 +16,10 @@ const publicUser = (u) => ({
   lastName: u.last_name,
   phone: u.phone,
   role: u.role,
+  province: u.province,
+  city: u.city,
+  barangay: u.barangay,
+  street: u.street,
 });
 
 router.post("/register", async (req, res) => {
@@ -69,5 +73,62 @@ router.get("/me", requireAuth, async (req, res) => {
   if (!rows[0]) return res.status(404).json({ error: "Account not found." });
   res.json(publicUser(rows[0]));
 });
+
+const PH_MOBILE = /^(\+63|0)?9\d{9}$/;
+const clean = (v) => (typeof v === "string" && v.trim() ? v.trim() : null);
+
+// Profile page: edit details and address (email is read-only)
+router.patch("/me", requireAuth, async (req, res) => {
+  const b = req.body ?? {};
+  const firstName = clean(b.firstName);
+  const lastName = clean(b.lastName);
+  const phone = clean(b.phone);
+  if (!firstName || !lastName)
+    return res.status(400).json({ error: "Enter your first and last name." });
+  if (!phone || !PH_MOBILE.test(phone.replace(/[\s-]/g, "")))
+    return res.status(400).json({ error: "Enter a Philippine mobile number, like 0917 555 0142." });
+
+  const address = [clean(b.province), clean(b.city), clean(b.barangay), clean(b.street)];
+  if (address.some(Boolean) && !address.every(Boolean))
+    return res.status(400).json({ error: "Complete your address: province, city, barangay, and street." });
+
+  try {
+    const { rows } = await pool.query(
+      `UPDATE users
+       SET first_name = $1, last_name = $2, phone = $3,
+           province = $4, city = $5, barangay = $6, street = $7
+       WHERE id = $8 RETURNING *`,
+      [firstName, lastName, phone, ...address, req.user.id]
+    );
+    res.json(publicUser(rows[0]));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong. Try again." });
+  }
+});
+
+router.post("/change-password", requireAuth, async (req, res) => {
+  const { currentPassword, newPassword } = req.body ?? {};
+  if (typeof currentPassword !== "string" || !currentPassword || typeof newPassword !== "string")
+    return res.status(400).json({ error: "Enter your current password and a new one." });
+  if (newPassword.length < 8)
+    return res.status(400).json({ error: "Your new password needs at least 8 characters." });
+  try {
+    const { rows } = await pool.query("SELECT password_hash FROM users WHERE id = $1", [req.user.id]);
+    const hash = rows[0]?.password_hash;
+    if (!hash)
+      return res.status(400).json({ error: "This account signs in with Google and has no password." });
+    if (!(await bcrypt.compare(currentPassword, hash)))
+      return res.status(400).json({ error: "Your current password is wrong." });
+    await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2",
+      [await bcrypt.hash(newPassword, 10), req.user.id]);
+    res.json({ message: "Password updated." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong. Try again." });
+  }
+});
+
+
 
 export default router;
