@@ -13,6 +13,14 @@ import OrderPlaced from "./pages/OrderPlaced.jsx";
 import Account from "./pages/Account.jsx";
 import Quiz from "./pages/Quiz.jsx";
 import About from "./pages/About.jsx";
+import AdminLayout from "./components/admin/AdminLayout.jsx";
+import ComingSoon from "./components/admin/ComingSoon.jsx";
+import Dashboard from "./pages/admin/Dashboard.jsx";
+import Batches from "./pages/admin/Batches.jsx";
+import BatchDetail from "./pages/admin/BatchDetail.jsx";
+import Users from "./pages/admin/Users.jsx";
+import Perfumes from "./pages/admin/Perfumes.jsx";
+import Orders from "./pages/admin/Orders.jsx";
 
 const NotFound = () => <p className="p-10 text-center text-muted">Page not found.</p>;
 
@@ -34,6 +42,17 @@ export default function App() {
       <Route path="/account" element={<RequireAuth><Account /></RequireAuth>} />
       <Route path="/quiz" element={<RequireAuth><Quiz /></RequireAuth>} />
       <Route path="/about" element={<About />} />
+      <Route path="/admin" element={<RequireAuth role="admin"><AdminLayout /></RequireAuth>}>
+        <Route index element={<Dashboard />} />
+        <Route path="*" element={<ComingSoon />} />
+        <Route path="batches" element={<Batches />} />
+        <Route path="batches/:id" element={<BatchDetail />} />
+        <Route path="users" element={<Users />} />
+        <Route path="perfumes" element={<Perfumes />} />
+        <Route path="orders" element={<Orders />} />
+      </Route>
+      
+      
     </Routes>
   );
 }
