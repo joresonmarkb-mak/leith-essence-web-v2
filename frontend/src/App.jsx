@@ -21,6 +21,9 @@ import BatchDetail from "./pages/admin/BatchDetail.jsx";
 import Users from "./pages/admin/Users.jsx";
 import Perfumes from "./pages/admin/Perfumes.jsx";
 import Orders from "./pages/admin/Orders.jsx";
+import Cashflow from "./pages/admin/Cashflow.jsx";
+import Ledger from "./pages/admin/Ledger.jsx";
+import Vouchers from "./pages/admin/Vouchers.jsx";
 
 const NotFound = () => <p className="p-10 text-center text-muted">Page not found.</p>;
 
@@ -50,6 +53,9 @@ export default function App() {
         <Route path="users" element={<Users />} />
         <Route path="perfumes" element={<Perfumes />} />
         <Route path="orders" element={<Orders />} />
+        <Route path="cashflow" element={<Cashflow />} />
+        <Route path="ledger" element={<Ledger />} />
+        <Route path="vouchers" element={<Vouchers />} />
       </Route>
       
       

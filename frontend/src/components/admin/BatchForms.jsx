@@ -254,7 +254,7 @@ function ExpenseForm({ batchId, expense, onClose, onSaved }) {
     setUploading(true);
     setUploadError("");
     try {
-      setReceiptUrl(await uploadFile(file, "receipt"));
+      setReceiptUrl(await uploadFile(file, "expense"));
     } catch (err) {
       setUploadError(err.message);
     }

@@ -128,12 +128,12 @@ function OrderDetail({ orderId, onChanged, onClose }) {
           className="mt-5 flex flex-col gap-3 rounded-xl border border-line p-4"
           onSubmit={(e) => {
             e.preventDefault();
-            act({ status: "paid", ownerId: Number(ownerId), receivedByOwnerId: receivedBy ? Number(receivedBy) : undefined });
+            act({ status: "paid", ownerId: ownerId ? Number(ownerId) : undefined, receivedByOwnerId: receivedBy ? Number(receivedBy) : undefined });
           }}
         >
-          <label className={labelCls}>Sold by (whose stock is used)
-            <select className={input} value={ownerId} onChange={(e) => setOwnerId(e.target.value)} required>
-              <option value="">Choose an owner</option>
+          <label className={labelCls}>Take stock from
+            <select className={input} value={ownerId} onChange={(e) => setOwnerId(e.target.value)}>
+              <option value="">Any owner (oldest stock first)</option>
               {owners.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
           </label>

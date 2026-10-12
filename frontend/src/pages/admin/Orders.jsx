@@ -7,6 +7,8 @@ import PageHeader from "../../components/admin/PageHeader.jsx";
 import { useMonth } from "../../components/admin/MonthSwitcher.jsx";
 import StatusPill from "../../components/StatusPill.jsx";
 import OrderDialog from "../../components/admin/OrderDialog.jsx";
+import { AddOrderDialog } from "../../components/admin/AddOrderForm.jsx";
+import { btn } from "../../components/admin/ui.js";
 
 const PLATFORM = { website: "Website", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", shopee: "Shopee", events: "Events" };
 const select =
@@ -21,6 +23,7 @@ export default function Orders() {
   const [orders, setOrders] = useState(null);
   const [error, setError] = useState("");
   const [openId, setOpenId] = useState(null);
+  const [adding, setAdding] = useState(false);
   const seq = useRef(0);
 
   const setFilter = (key, value) => {
@@ -69,6 +72,7 @@ export default function Orders() {
           <option value="all">All platforms</option>
           {Object.entries(PLATFORM).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
+        <button type="button" onClick={() => setAdding(true)} className={`${btn} sm:ml-auto`}>+ Add order</button>
       </div>
 
       {error && <p role="alert" className="mt-6 text-sm text-danger">{error}</p>}
@@ -113,7 +117,10 @@ export default function Orders() {
           )}
         </section>
       )}
-
+      <AddOrderDialog
+        open={adding} onClose={() => setAdding(false)}
+        onSaved={(saved) => { setAdding(false); load(); setOpenId(saved.id); }}
+      />
       <OrderDialog orderId={openId} onClose={() => setOpenId(null)} onChanged={load} />
     </>
   );
