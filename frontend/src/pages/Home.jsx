@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowCircle } from "../components/Icons.jsx";
+import TopChoices from "../components/TopChoices.jsx";
 
 export default function Home() {
   return (
@@ -38,6 +39,7 @@ export default function Home() {
         </div>
         <img src="/quiz-banner.png" alt="" className="h-72 w-full object-cover md:h-full md:min-h-[420px]" />
       </section>
+      <TopChoices />
     </>
   );
 }
