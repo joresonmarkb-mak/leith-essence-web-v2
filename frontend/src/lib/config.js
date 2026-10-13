@@ -4,7 +4,8 @@ export const GCASH = {
   qrImage: "/gcash-qr.jpg",
 };
 export const TOP_CHOICES = [
-  { name: "Prince Noir", image: "/top-choices/prince-noir.png", tags: ["Smokey", "Masculine", "Citrus"] },
-  { name: "Midnight Muse", image: "/top-choices/midnight-muse.png", tags: ["Sweet", "Elegant", "Seductive"] },
-  { name: "After Hour", image: "/top-choices/after-hour.png", tags: ["Fresh", "Clean", "Green apple"] },
+  { name: "Prince Noir", image: "/top-choices/men.png", tags: ["Smokey", "Masculine", "Citrus"] },
+  { name: "After Hour", image: "/top-choices/men.png", tags: ["Fresh", "Clean", "Green apple"] },
+  { name: "Midnight Muse", image: "/top-choices/women.png", tags: ["Sweet", "Elegant", "Seductive"] },
+  { name: "Sofie", image: "/top-choices/women.png", tags: ["Sweet", "Elegant", "Seductive"] },
 ];

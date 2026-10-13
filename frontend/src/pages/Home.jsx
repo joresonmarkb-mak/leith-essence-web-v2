@@ -24,7 +24,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="grid md:grid-cols-2">
+      <section className="grid md:grid-cols-2 ">
         <div className="flex flex-col justify-center bg-panel px-6 py-14 sm:px-12 md:py-20">
           <h2 className="text-2xl font-semibold uppercase leading-tight tracking-tight sm:text-3xl">
             Take our quiz and<br />build your scent profile
