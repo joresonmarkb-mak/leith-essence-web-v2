@@ -87,6 +87,7 @@ function Detail({ id }) {
 
   const wears = new Set(perfume.whenToWear ?? []);
 
+
   return (
     <div className="mx-auto max-w-[1200px] px-4 pb-16 pt-6 sm:px-6">
       <Link to="/shop" className="text-[11px] font-medium uppercase tracking-wide text-muted hover:text-fg">
@@ -96,8 +97,17 @@ function Detail({ id }) {
       <div className="mt-4 grid gap-8 md:grid-cols-2 md:gap-12">
         <div className="flex items-center justify-center bg-surface p-6 md:p-10">
           {perfume.imageUrl ? (
-            <img src={perfume.imageUrl} alt={perfume.name} className="max-h-[420px] w-full object-contain" />
+            <img
+              src={perfume.imageUrl}
+              alt={perfume.name}
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+              className="max-h-[420px] w-full object-contain"
+            />
           ) : (
+            
             <span className="py-24 text-sm uppercase text-muted">No photo yet</span>
           )}
         </div>
@@ -181,6 +191,7 @@ function Detail({ id }) {
                       <div className="flex aspect-square w-full items-center justify-center bg-panel p-1 text-[10px] uppercase text-muted">
                         {n.name}
                       </div>
+                      
                     )}
                     <p className="mt-1 text-[11px] leading-tight text-muted">{n.name}</p>
                   </li>

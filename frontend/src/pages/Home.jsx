@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowCircle } from "../components/Icons.jsx";
 import TopChoices from "../components/TopChoices.jsx";
+import EditorialStory from "../components/EditorialStory.jsx";
+import Impressions from "../components/Impressions.jsx";
 
 export default function Home() {
   return (
     <>
-      <section className="mx-auto max-w-[1440px] px-4 pb-8 pt-8 sm:px-[3.5%]" style={{ "--s": "min(26vw, 380px)" }}>
+      <section className="mx-auto max-w-[1840px] px-4 pb-8 pt-8 sm:px-[3.5%]" style={{ "--s": "min(26vw, 380px)" }}>
         <div className="relative z-10 mx-[2%] overflow-hidden bg-panel sm:mx-[8%]">
           <img src="/hero.png" alt="Leith Essence Extrait de Parfum" className="aspect-[4/3] w-full object-cover sm:aspect-[679/410]" />
 
@@ -40,6 +42,8 @@ export default function Home() {
         <img src="/quiz-banner.png" alt="" className="h-72 w-full object-cover md:h-full md:min-h-[420px]" />
       </section>
       <TopChoices />
+      <EditorialStory />
+      <Impressions />
     </>
   );
 }
