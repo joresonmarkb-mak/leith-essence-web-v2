@@ -24,12 +24,16 @@ import Orders from "./pages/admin/Orders.jsx";
 import Cashflow from "./pages/admin/Cashflow.jsx";
 import Ledger from "./pages/admin/Ledger.jsx";
 import Vouchers from "./pages/admin/Vouchers.jsx";
+import Subscribers from "./pages/admin/Subscribers.jsx";
+import ScrollToHash from "./components/ScrollToHash.jsx";
 
 const NotFound = () => <p className="p-10 text-center text-muted">Page not found.</p>;
 
 export default function App() {
-  return (
+  return (<>
+    <ScrollToHash />
     <Routes>
+      
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
@@ -56,9 +60,11 @@ export default function App() {
         <Route path="cashflow" element={<Cashflow />} />
         <Route path="ledger" element={<Ledger />} />
         <Route path="vouchers" element={<Vouchers />} />
+        <Route path="subscribers" element={<Subscribers />} />
       </Route>
       
       
     </Routes>
+    </>
   );
 }

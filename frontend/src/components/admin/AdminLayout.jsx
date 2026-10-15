@@ -13,6 +13,7 @@ const NAV = [
   ["Orders", "/admin/orders"],
   ["Users", "/admin/users"],
   ["Vouchers", "/admin/vouchers"],
+  ["Subscribers", "/admin/subscribers"]
 ];
 
 function SideNav({ onNavigate }) {

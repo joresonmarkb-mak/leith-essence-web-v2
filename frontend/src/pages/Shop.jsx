@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../lib/api.js";
 import ProductCard from "../components/ProductCard.jsx";
+import Footer from "../components/Footer.jsx";
 
 const selectClass =
   "cursor-pointer bg-transparent text-base outline-none sm:text-[11px] sm:font-semibold sm:uppercase";
@@ -31,6 +32,7 @@ export default function Shop() {
   };
 
   return (
+    <>
     <div className="mx-auto max-w-[1440px] px-4 pb-16 pt-6 sm:px-[3.5%]">
       <div className="relative overflow-hidden bg-panel">
         <img src="/cover-all-perfume.png" alt="" className="h-48 w-full object-cover sm:h-64" />
@@ -81,5 +83,8 @@ export default function Shop() {
         </div>
       )}
     </div>
+    <Footer />
+    </>
   );
+  
 }

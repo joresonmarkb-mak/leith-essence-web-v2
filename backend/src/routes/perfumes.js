@@ -13,7 +13,7 @@ const PERFUME_SQL = `
   SELECT p.id, p.name, p.inspired_by AS "inspiredBy", p.description,
          p.category, p.intensity, p.when_to_wear AS "whenToWear", p.image_url AS "imageUrl",
          COALESCE(
-           json_agg(json_build_object('id', n.id, 'name', n.name, 'imageUrl', COALESCE(n.img_url, n.image_url))
+           json_agg(json_build_object('id', n.id, 'name', n.name, 'imageUrl', n.image_url)
                     ORDER BY pn.position) FILTER (WHERE n.id IS NOT NULL),
            '[]'
          ) AS notes

@@ -7,6 +7,8 @@ import { useCart } from "../context/CartContext.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import QtyStepper from "../components/QtyStepper.jsx";
 import { CoolIcon, SummerIcon, DayIcon, NightIcon } from "../components/WearIcons.jsx";
+import Navbar from "../context/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
 
 const CATEGORY_LABEL = { for_him: "For him", for_her: "For her", unisex: "Unisex" };
 const WEAR = [
@@ -88,7 +90,8 @@ function Detail({ id }) {
   const wears = new Set(perfume.whenToWear ?? []);
 
 
-  return (
+  return (<>
+  <Navbar />
     <div className="mx-auto max-w-[1200px] px-4 pb-16 pt-6 sm:px-6">
       <Link to="/shop" className="text-[11px] font-medium uppercase tracking-wide text-muted hover:text-fg">
         &larr; All perfumes
@@ -225,6 +228,9 @@ function Detail({ id }) {
           </div>
         </section>
       )}
+     
     </div>
+     <Footer/>
+     </>
   );
 }

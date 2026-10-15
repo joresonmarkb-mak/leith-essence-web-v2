@@ -17,6 +17,9 @@ import ledgerRoutes from "./routes/ledger.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import quizRoutes from "./routes/quiz.js";
 import uploadRoutes from "./routes/uploads.js";
+import subscribersRouter from "./routes/subscribers.js";
+import announcementsRouter from "./routes/announcements.js";
+
 
 const app = express();
 app.use(cors());
@@ -42,6 +45,8 @@ app.use("/api/ledger", ledgerRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/uploads", uploadRoutes);
+app.use("/api/subscribers", subscribersRouter);
+app.use("/api/announcements", announcementsRouter);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)
