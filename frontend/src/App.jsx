@@ -26,6 +26,11 @@ import Ledger from "./pages/admin/Ledger.jsx";
 import Vouchers from "./pages/admin/Vouchers.jsx";
 import Subscribers from "./pages/admin/Subscribers.jsx";
 import ScrollToHash from "./components/ScrollToHash.jsx";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
+import Privacy from "./pages/Privacy.jsx";
+import Terms from "./pages/Terms.jsx";
+import Cookies from "./pages/Cookies.jsx";
+import AdminReviews from "./pages/admin/Reviews";
 
 const NotFound = () => <p className="p-10 text-center text-muted">Page not found.</p>;
 
@@ -49,6 +54,10 @@ export default function App() {
       <Route path="/account" element={<RequireAuth><Account /></RequireAuth>} />
       <Route path="/quiz" element={<RequireAuth><Quiz /></RequireAuth>} />
       <Route path="/about" element={<About />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/cookies" element={<Cookies />} />
       <Route path="/admin" element={<RequireAuth role="admin"><AdminLayout /></RequireAuth>}>
         <Route index element={<Dashboard />} />
         <Route path="*" element={<ComingSoon />} />
@@ -61,6 +70,7 @@ export default function App() {
         <Route path="ledger" element={<Ledger />} />
         <Route path="vouchers" element={<Vouchers />} />
         <Route path="subscribers" element={<Subscribers />} />
+        <Route path="reviews" element={<AdminReviews />} />
       </Route>
       
       

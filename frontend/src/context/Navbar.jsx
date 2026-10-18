@@ -21,8 +21,8 @@ export default function Navbar() {
   const close = () => setOpen(false);
 
   const isAdmin = user?.role === "admin";
-  const name = user?.name?.trim() || user?.email?.split("@")[0] || "";
-  const firstName = name.split(" ")[0];
+  const name = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || user?.email?.split("@")[0] || "";
+  const firstName = user?.firstName || name.split(" ")[0];
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-surface">
@@ -63,7 +63,7 @@ export default function Navbar() {
         <div className="flex items-center justify-end gap-3 sm:gap-4">
           {user && (
             <Link
-              to="/account"
+              to="/"
               className="hidden max-w-28 truncate text-[11px] font-medium uppercase tracking-wide transition hover:opacity-60 lg:inline"
               title={name}
             >

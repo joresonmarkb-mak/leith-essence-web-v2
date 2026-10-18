@@ -9,6 +9,7 @@ import QtyStepper from "../components/QtyStepper.jsx";
 import { CoolIcon, SummerIcon, DayIcon, NightIcon } from "../components/WearIcons.jsx";
 import Navbar from "../context/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import Reviews from "../components/Reviews";
 
 const CATEGORY_LABEL = { for_him: "For him", for_her: "For her", unisex: "Unisex" };
 const WEAR = [
@@ -228,8 +229,9 @@ function Detail({ id }) {
           </div>
         </section>
       )}
-     
+         <Reviews perfumeId={perfume.id} />
     </div>
+
      <Footer/>
      </>
   );

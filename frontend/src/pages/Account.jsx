@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { peso, shortDate, orderNo } from "../lib/format.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import Navbar from "../context/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
 
 const panel = "rounded-2xl border border-line bg-surface p-5 sm:p-7";
 const btn = "min-h-11 rounded-full border border-fg px-5 text-[11px] font-medium uppercase tracking-wider transition hover:bg-fg/5";
@@ -19,6 +21,7 @@ export default function Account() {
     }`;
 
   return (
+    
     <div className="mx-auto max-w-[1120px] px-4 pb-16 pt-8 sm:px-6 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:pt-10">
       <nav aria-label="Account" className="mb-6 flex flex-wrap gap-1.5 md:mb-0 md:flex-col md:self-start">
         <Link to={{ hash: "#profile" }} aria-current={tab === "profile" ? "page" : undefined} className={tabClass(tab === "profile")}>Profile</Link>
@@ -37,6 +40,8 @@ export default function Account() {
 function Field({ id, label, value, onChange, editing, readOnly, hint, ...rest }) {
   const locked = !editing || readOnly;
   return (
+    <>
+    
     <div className="flex min-w-0 flex-col gap-0.5">
       <label htmlFor={id} className="text-[11px] text-muted">{label}</label>
       <input
@@ -48,6 +53,8 @@ function Field({ id, label, value, onChange, editing, readOnly, hint, ...rest })
       />
       {hint && <span className="text-[11px] text-muted">{hint}</span>}
     </div>
+   
+    </>
   );
 }
 

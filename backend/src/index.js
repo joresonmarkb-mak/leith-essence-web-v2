@@ -19,6 +19,8 @@ import quizRoutes from "./routes/quiz.js";
 import uploadRoutes from "./routes/uploads.js";
 import subscribersRouter from "./routes/subscribers.js";
 import announcementsRouter from "./routes/announcements.js";
+import reviewsRouter from "./routes/reviews.js";
+
 
 
 const app = express();
@@ -47,6 +49,7 @@ app.use("/api/quiz", quizRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/subscribers", subscribersRouter);
 app.use("/api/announcements", announcementsRouter);
+app.use("/api/reviews", reviewsRouter);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)

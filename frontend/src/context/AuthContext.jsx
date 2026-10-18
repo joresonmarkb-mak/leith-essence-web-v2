@@ -31,8 +31,11 @@ export function AuthProvider({ children }) {
   const login = async (email, password) =>
     startSession(await api("/auth/login", { method: "POST", body: { email, password } }));
 
-  const register = async (fields) =>
-    startSession(await api("/auth/register", { method: "POST", body: fields }));
+  // Registering no longer logs you in; the email must be confirmed first
+  const register = (fields) => api("/auth/register", { method: "POST", body: fields });
+
+  const loginWithGoogle = async (credential) =>
+    startSession(await api("/auth/google", { method: "POST", body: { credential } }));
 
   const logout = () => {
     setToken(null);
@@ -42,7 +45,9 @@ export function AuthProvider({ children }) {
   const refreshUser = async () => setUser(await api("/auth/me"));
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+   <AuthContext.Provider
+      value={{ user, loading, login, register, loginWithGoogle, acceptSession: startSession, logout, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

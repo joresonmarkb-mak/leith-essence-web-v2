@@ -15,6 +15,7 @@ const PHONE = "+53124539211"; // <- check this number, it's the one in the mocku
 const INSTAGRAM = "leithessence.ph";
 const LEGAL = [
   { label: "Privacy & policy", to: "/privacy" },
+  { label: "Terms & conditions", to: "/terms" },
   { label: "Cookies", to: "/cookies" },
 ];
 
@@ -68,7 +69,7 @@ export default function Footer() {
           <p className="font-mono text-[10px] uppercase tracking-wide sm:text-[11px]">
             All rights reserved. Leith Essence {new Date().getFullYear()}
           </p>
-          <div className="flex gap-x-6 md:contents">
+          <div className="flex flex-wrap gap-x-6 md:col-span-2">
             {LEGAL.map((l) => (
               <Link
                 key={l.label}
