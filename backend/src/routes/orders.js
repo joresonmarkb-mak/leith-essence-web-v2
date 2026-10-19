@@ -2,6 +2,7 @@ import { Router } from "express";
 import { pool } from "../db.js";
 import { requireAuth, requireAdmin } from "../middleware/auth.js";
 import { HttpError, lockOrders, priceOrder, createOrder, confirmPayment } from "../lib/orderLogic.js";
+import { sendOrderEmail } from "../lib/orderMailer.js";
 
 const router = Router();
 
@@ -48,7 +49,8 @@ const ORDER_SQL = `
          o.subtotal::float8 AS subtotal, o.shipping_fee::float8 AS "shippingFee",
          o.discount::float8 AS discount, o.total::float8 AS total, o.notes,
          o.tracking_number AS "trackingNumber", o.created_at AS "createdAt",
-         o.paid_at AS "paidAt", o.fulfilled_at AS "fulfilledAt", v.code AS "voucherCode"
+         o.paid_at AS "paidAt", o.fulfilled_at AS "fulfilledAt",
+         o.received_at AS "receivedAt", v.code AS "voucherCode"
   FROM orders o LEFT JOIN vouchers v ON v.id = o.voucher_id
   WHERE o.id = $1`;
 
@@ -67,6 +69,7 @@ const ITEMS_SQL = `
 const LIST_SQL = `
   SELECT o.id, o.buyer_name AS "buyerName", o.type, o.status, o.platform,
          o.total::float8 AS total, o.created_at AS "createdAt",
+         o.received_at AS "receivedAt",
          concat_ws(', ', o.barangay, o.city, o.province) AS address,
          (SELECT COALESCE(json_agg(x ORDER BY x.name, x."sizeMl"), '[]')
           FROM (SELECT p.name, oi.size_ml AS "sizeMl", SUM(oi.quantity)::int AS quantity
@@ -269,6 +272,7 @@ router.get("/:id", requireAuth, async (req, res) => {
   }
 });
 
+
 // Confirm payment, mark fulfilled, or cancel
 router.patch("/:id/status", requireAuth, requireAdmin, async (req, res) => {
   const id = toId(req.params.id);
@@ -277,6 +281,7 @@ router.patch("/:id/status", requireAuth, requireAdmin, async (req, res) => {
   if (!["paid", "fulfilled", "cancelled"].includes(status))
     return res.status(400).json({ error: "Choose paid, fulfilled, or cancelled." });
 
+  let before; // the status the order had before this change
   try {
     await withTx(async (client) => {
       const { rows } = await client.query(
@@ -285,6 +290,7 @@ router.patch("/:id/status", requireAuth, requireAdmin, async (req, res) => {
       if (!order) throw new HttpError(404, "Order not found.");
       if (!TRANSITIONS[order.status].includes(status))
         throw new HttpError(409, `A ${order.status} order can't be changed to ${status}.`);
+      before = order.status;
 
       if (status === "paid") {
         await confirmPayment(client, id, {
@@ -303,10 +309,17 @@ router.patch("/:id/status", requireAuth, requireAdmin, async (req, res) => {
         await client.query("UPDATE orders SET status = 'cancelled' WHERE id = $1", [id]);
       }
     });
-    res.json(await fetchOrder(pool, id));
+
+    const updated = await fetchOrder(pool, id);
+    // email the buyer; a mail problem must never undo or block the status change
+    if (status === "paid" || status === "cancelled")
+      sendOrderEmail(updated, status, before).catch((e) => console.error("Order email failed:", e.message));
+    res.json(updated);
   } catch (err) {
     handle(res, err);
   }
 });
 
+
 export default router;
+

@@ -65,7 +65,7 @@ export default function Orders() {
           <option value="all">All statuses</option>
           <option value="pending">Pending</option>
           <option value="paid">Paid</option>
-          <option value="fulfilled">Fulfilled</option>
+          <option value="fulfilled">Shipped</option>
           <option value="cancelled">Cancelled</option>
         </select>
         <select aria-label="Platform" className={select} value={platform} onChange={(e) => setFilter("platform", e.target.value)}>
@@ -100,7 +100,10 @@ export default function Orders() {
                       <td className="max-w-[240px] py-3 pr-3 text-muted">{o.items.map((i) => `${i.name} ${i.sizeMl}ml ×${i.quantity}`).join(", ")}</td>
                       <td className="py-3 pr-3">{PLATFORM[o.platform]}</td>
                       <td className="py-3 pr-3 text-right tabular-nums">{peso(o.total)}</td>
-                      <td className="py-3 pr-3"><StatusPill status={o.status} /></td>
+                      <td className="py-3 pr-3">
+                        <StatusPill status={o.status} />
+                        {o.receivedAt && <span className="mt-1 block text-[11px] text-muted">Received {shortDate(o.receivedAt)}</span>}
+                      </td>
                       <td className="py-1">
                         <button
                           type="button" onClick={() => setOpenId(o.id)}

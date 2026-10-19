@@ -5,6 +5,8 @@ import { peso, shortDate, orderNo } from "../lib/format.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Navbar from "../context/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import ReviewButton from "../components/ReviewButton";
+
 
 const panel = "rounded-2xl border border-line bg-surface p-5 sm:p-7";
 const btn = "min-h-11 rounded-full border border-fg px-5 text-[11px] font-medium uppercase tracking-wider transition hover:bg-fg/5";
@@ -21,7 +23,8 @@ export default function Account() {
     }`;
 
   return (
-    
+    <>
+    <Navbar />
     <div className="mx-auto max-w-[1120px] px-4 pb-16 pt-8 sm:px-6 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:pt-10">
       <nav aria-label="Account" className="mb-6 flex flex-wrap gap-1.5 md:mb-0 md:flex-col md:self-start">
         <Link to={{ hash: "#profile" }} aria-current={tab === "profile" ? "page" : undefined} className={tabClass(tab === "profile")}>Profile</Link>
@@ -32,6 +35,8 @@ export default function Account() {
       </nav>
       <main className="min-w-0">{tab === "profile" ? <Profile /> : <Orders />}</main>
     </div>
+    <Footer />
+    </>
   );
 }
 
@@ -204,13 +209,16 @@ function PasswordForm() {
 
 /* ---------------- My orders ---------------- */
 
-const LABEL = { pending: "Pending", paid: "Paid", fulfilled: "Fulfilled", cancelled: "Cancelled" };
+// "fulfilled" in the database means Shipped. Received = shipped + the client confirmed it.
+const LABEL = { pending: "Pending", paid: "Paid", fulfilled: "Shipped", received: "Received", cancelled: "Cancelled" };
 const PILL = {
   pending: "bg-warn-bg text-warn",
   paid: "bg-success-bg text-success",
   fulfilled: "bg-accent text-accent-fg",
+  received: "bg-success-bg text-success",
   cancelled: "bg-danger-bg text-danger",
 };
+const view = (o) => (o.status === "fulfilled" && o.receivedAt ? "received" : o.status);
 
 import { useEffect } from "react";
 
@@ -228,9 +236,12 @@ function Orders() {
     return () => { ignore = true; };
   }, []);
 
-  const defaultOpen = orders?.find((o) => o.status === "pending")?.id;
-  const shown = orders?.filter((o) => filter === "all" || o.status === filter) ?? [];
-  const count = (k) => (k === "all" ? orders?.length : orders?.filter((o) => o.status === k).length) ?? 0;
+  const markReceived = (id, receivedAt) =>
+    setOrders((list) => list.map((x) => (x.id === id ? { ...x, receivedAt } : x)));
+
+  const defaultOpen = orders?.find((o) => o.status === "pending" || view(o) === "fulfilled")?.id;
+  const shown = orders?.filter((o) => filter === "all" || view(o) === filter) ?? [];
+  const count = (k) => (k === "all" ? orders?.length : orders?.filter((o) => view(o) === k).length) ?? 0;
 
   return (
     <section>
@@ -240,7 +251,7 @@ function Orders() {
       </p>
 
       <div role="group" aria-label="Filter orders" className="mt-7 flex flex-wrap gap-2">
-        {["all", "pending", "paid", "fulfilled", "cancelled"].map((k) => (
+        {["all", "pending", "paid", "fulfilled", "received", "cancelled"].map((k) => (
           <button
             key={k} type="button" aria-pressed={filter === k} onClick={() => setFilter(k)}
             className={`min-h-9 rounded-full border px-3.5 text-[11px] font-medium uppercase tracking-wide ${
@@ -264,15 +275,40 @@ function Orders() {
       <div className="mt-5 flex flex-col gap-3.5">
         {shown.map((o) => {
           const isOpen = toggled[o.id] ?? o.id === defaultOpen;
-          return <OrderCard key={o.id} order={o} open={isOpen} onToggle={() => setToggled((t) => ({ ...t, [o.id]: !isOpen }))} />;
+          return (
+            <OrderCard
+              key={o.id} order={o} open={isOpen}
+              onToggle={() => setToggled((t) => ({ ...t, [o.id]: !isOpen }))}
+              onReceived={markReceived}
+            />
+          );
         })}
       </div>
     </section>
   );
 }
 
-function OrderCard({ order: o, open, onToggle }) {
+function OrderCard({ order: o, open, onToggle, onReceived }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const v = view(o);
+  const shipped = o.status === "fulfilled";
+  const received = shipped && !!o.receivedAt;
   const names = o.items.map((i) => `${i.name} ${i.sizeMl}ml${i.quantity > 1 ? ` x${i.quantity}` : ""}`).join(", ");
+
+  async function confirmReceived() {
+    if (!confirm("Confirm that you received this order?")) return;
+    setBusy(true);
+    setErr("");
+    try {
+      const r = await api(`/orders/${o.id}/received`, { method: "PATCH" });
+      onReceived(o.id, r.receivedAt);
+    } catch (e) {
+      setErr(e.message || "Could not update your order.");
+    }
+    setBusy(false);
+  }
+
   return (
     <article className="overflow-hidden rounded-2xl border border-line bg-surface">
       <button
@@ -282,7 +318,7 @@ function OrderCard({ order: o, open, onToggle }) {
         <span className="font-mono text-xs tracking-wide">{orderNo(o.id)}<small className="ml-2.5 text-muted">{shortDate(o.createdAt)}</small></span>
         <span className="flex items-center justify-between gap-3 sm:row-span-2 sm:col-start-2 sm:row-start-1 sm:justify-end sm:gap-3.5">
           <span className="text-[17px] font-bold tabular-nums">{peso(o.total)}</span>
-          <span className={`rounded-full px-3 py-0.5 text-[11px] font-medium ${PILL[o.status]}`}>{LABEL[o.status]}</span>
+          <span className={`rounded-full px-3 py-0.5 text-[11px] font-medium ${PILL[v]}`}>{LABEL[v]}</span>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`text-muted transition-transform ${open ? "rotate-180" : ""}`}><path d="M6 9l6 6 6-6" /></svg>
         </span>
         <span className="break-words text-[13px] text-muted sm:col-start-1">{names}</span>
@@ -291,8 +327,29 @@ function OrderCard({ order: o, open, onToggle }) {
       {open && (
         <div id={`order-${o.id}`} className="flex flex-col gap-6 border-t border-line p-4 sm:px-6 sm:pb-6 sm:pt-5">
           <Stepper order={o} />
+
+          {shipped && !received && (
+            <div className="rounded-xl border border-line bg-bg p-4">
+              <p className="text-[13px]">
+                Your order is on its way. Once it arrives, confirm it here. After that you can review your perfumes.
+              </p>
+              {err && <p role="alert" className="mt-2 text-sm text-danger">{err}</p>}
+              <button
+                type="button" onClick={confirmReceived} disabled={busy}
+                className="mt-3 min-h-11 rounded-full bg-accent px-6 text-xs font-semibold uppercase tracking-wide text-accent-fg disabled:opacity-50"
+              >
+                {busy ? "Saving..." : "Order received"}
+              </button>
+            </div>
+          )}
+          {received && (
+            <p className="text-[13px] text-muted">
+              Thanks for confirming! Tap "Write a review" under a perfume to tell us what you think.
+            </p>
+          )}
+
           <ul>
-            {o.items.map((i) => (
+            {o.items.map((i, idx) => (
               <li key={i.id} className="flex items-center gap-4 border-b border-line py-3 first:pt-0">
                 <div className="grid h-16 w-16 shrink-0 place-items-center rounded-xl border border-line bg-bg sm:h-[72px] sm:w-[72px]">
                   {i.imageUrl && <img src={i.imageUrl} alt="" className="max-h-[85%] max-w-[85%] object-contain" />}
@@ -301,6 +358,11 @@ function OrderCard({ order: o, open, onToggle }) {
                   <p className="text-[15px] font-bold uppercase">{i.name}</p>
                   {i.inspiredBy && <p className="font-serif text-[15px] italic text-muted">{i.inspiredBy}</p>}
                   <p className="text-xs text-muted">{CATEGORY_LABEL[i.category]} &middot; {i.sizeMl}ml &middot; Qty {i.quantity}</p>
+                  {received && i.perfumeId && o.items.findIndex((x) => x.perfumeId === i.perfumeId) === idx && (
+                    <div className="mt-2">
+                      <ReviewButton perfumeId={i.perfumeId} perfumeName={i.name} />
+                    </div>
+                  )}
                 </div>
                 <p className="shrink-0 text-sm tabular-nums">{peso(i.unitPrice * i.quantity)}</p>
               </li>
@@ -357,20 +419,23 @@ function Stepper({ order: o }) {
     );
   }
   const s = o.status;
+  const shipped = s === "fulfilled";
+  const received = shipped && !!o.receivedAt;
   const steps = [
     { title: "Order placed", sub: shortDate(o.createdAt), state: "done" },
     { title: "Payment confirmed", sub: s === "pending" ? "Checking your receipt" : shortDate(o.paidAt), state: s === "pending" ? "current" : "done" },
-    { title: "Fulfilled", sub: s === "fulfilled" ? shortDate(o.fulfilledAt) : s === "paid" ? "Preparing your order" : "Not yet", state: s === "fulfilled" ? "done" : s === "paid" ? "current" : "todo" },
+    { title: "Shipped", sub: shipped ? shortDate(o.fulfilledAt) : s === "paid" ? "Preparing your order" : "Not yet", state: shipped ? "done" : s === "paid" ? "current" : "todo" },
+    { title: "Order received", sub: received ? shortDate(o.receivedAt) : shipped ? "Confirm when it arrives" : "Not yet", state: received ? "done" : shipped ? "current" : "todo" },
   ];
   return (
     <>
-      <ol className="grid grid-cols-3 gap-2">
+      <ol className="grid grid-cols-4 gap-2">
         {steps.map((st, i) => (
           <li key={st.title} className="relative min-w-0 pt-7">
             <span className={`absolute left-0 top-1.5 z-10 h-3.5 w-3.5 rounded-full border-[1.5px] ${st.state === "todo" ? "border-muted bg-surface" : "border-fg bg-fg"} ${st.state === "current" ? "ring-2 ring-fg/25" : ""}`} />
             {i < steps.length - 1 && <span className={`absolute -right-2 left-3.5 top-[13px] h-[1.5px] ${st.state === "done" ? "bg-fg" : "bg-line"}`} />}
             <b className={`block text-xs ${st.state === "todo" ? "text-muted" : ""}`}>{st.title}</b>
-            <span className="block break-words text-xs text-muted">{st.sub}</span>
+            <span className="block break-words text-[11px] text-muted">{st.sub}</span>
           </li>
         ))}
       </ol>

@@ -7,6 +7,7 @@ import { input, labelCls, btnGhost, asList } from "./ui.js";
 
 const WEAR = [["cool", "Cool weather"], ["summer", "Summer"], ["day", "Day"], ["night", "Night"]];
 
+
 function PerfumeForm({ perfume, onClose, onSaved }) {
   const [name, setName] = useState(perfume?.name ?? "");
   const [inspiredBy, setInspiredBy] = useState(perfume?.inspiredBy ?? "");
@@ -75,14 +76,14 @@ function PerfumeForm({ perfume, onClose, onSaved }) {
           <input className={input} value={inspiredBy} onChange={(e) => setInspiredBy(e.target.value)} placeholder="Creed Aventus" />
         </label>
         <label className={labelCls}>Category
-          <select className={input} value={category} onChange={(e) => setCategory(e.target.value)}>
+          <select className={`${input} w-full min-w-0 max-w-full min-h-11 truncate border border-line bg-bg px-3 text-base text-fg`} value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="for_him">For him</option>
             <option value="for_her">For her</option>
             <option value="unisex">Unisex</option>
           </select>
         </label>
         <label className={labelCls}>How noticeable
-          <select className={input} value={intensity} onChange={(e) => setIntensity(e.target.value)}>
+          <select className={`${input} w-full min-w-0 max-w-full min-h-11 truncate border border-line bg-bg px-3 text-base text-fg`} value={intensity} onChange={(e) => setIntensity(e.target.value)}>
             <option value="subtle">Subtle</option>
             <option value="moderate">Moderate</option>
             <option value="strong">Strong</option>

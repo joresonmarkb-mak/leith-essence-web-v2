@@ -10,11 +10,12 @@ const BOUGHT_SQL = `
   SELECT 1
   FROM orders o
   JOIN order_items oi ON oi.order_id = o.id
-  WHERE o.user_id = $1 AND oi.perfume_id = $2 AND o.status::text = ANY($3)
+  WHERE o.user_id = $1 AND oi.perfume_id = $2
+    AND o.status = 'fulfilled' AND o.received_at IS NOT NULL
   LIMIT 1`;
 
 async function hasReceived(userId, perfumeId) {
-  const r = await pool.query(BOUGHT_SQL, [userId, perfumeId, RECEIVED_STATUSES]);
+  const r = await pool.query(BOUGHT_SQL, [userId, perfumeId]);
   return r.rowCount > 0;
 }
 
