@@ -78,7 +78,7 @@ export default function Shop() {
         <p className="mt-10 text-center text-sm text-muted">No perfumes match that filter right now.</p>
       )}
       {perfumes?.length > 0 && (
-        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-3 gap-x-2 gap-y-6 sm:gap-x-4 sm:gap-y-10 lg:grid-cols-4">
           {perfumes.map((p) => <ProductCard key={p.id} perfume={p} />)}
         </div>
       )}

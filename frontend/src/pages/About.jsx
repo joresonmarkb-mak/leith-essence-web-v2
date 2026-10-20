@@ -1,5 +1,6 @@
 import Navbar from "../context/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import FindUs from "../components/FindUs.jsx";
 
 const STORY =
   "Leith Essence began with three friends who shared one obsession: perfume. What started as late-night conversations about scent notes, favorite fragrances, and the perfect signature scent turned into a shared dream of creating something of our own. Today, we bring that same passion to every bottle we offer, curating fragrances that help you express who you are and leave a lasting impression. At Leith Essence, we believe a scent is more than something you wear. It's a memory, a mood, and a story, and we're here to help you find yours.";
@@ -63,7 +64,7 @@ export default function About() {
             {STORY}
           </p>
         </section>
-
+    <FindUs />
         <h2 className="display-title mt-12 text-balance text-center text-3xl sm:mt-14 sm:text-5xl">
           Behind the brands
         </h2>
@@ -140,50 +141,53 @@ export default function About() {
 })}
         </div>
       </div>
-       <section aria-labelledby="friends-title" className="mt-16 text-center sm:mt-24 my-10">
-      <h2
-        id="friends-title"
-        className="display-title bg-gradient-to-r from-fg from-60% to-muted bg-clip-text text-balance text-3xl text-transparent sm:text-5xl"
-      >
-        Support our friends
-      </h2>
-      <p className="mx-auto mt-3 max-w-xl text-balance text-[11px] leading-relaxed text-muted sm:mt-4 sm:text-xs">
-        Beyond affordable perfumes with a luxury feel, Leith Essence stands with small
-        businesses. Take a moment to check out these five.
-      </p>
+<section aria-labelledby="friends-title" className="mb-10 mt-16 text-center sm:mt-24">
+  <h2
+    id="friends-title"
+    className="display-title bg-gradient-to-r from-fg from-60% to-muted bg-clip-text text-balance text-3xl text-transparent sm:text-5xl"
+  >
+    Support our friends
+  </h2>
+  <p className="mx-auto mt-3 max-w-xl text-balance text-[11px] leading-relaxed text-muted sm:mt-4 sm:text-xs">
+    Beyond affordable perfumes with a luxury feel, Leith Essence stands with small
+    businesses. Take a moment to check out these five.
+  </p>
 
-      <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-8 sm:mt-10 sm:gap-x-6 lg:flex-nowrap lg:gap-x-8">
-        {FRIENDS.map((f) => {
-          const logo = (
-          <img
-            src={f.logo}
-            alt={f.name}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-contain mix-blend-multiply "
-          />
-          );
+  <ul className="mt-8 flex flex-wrap items-stretch justify-center gap-x-4 gap-y-4 sm:mt-10 sm:gap-x-6 sm:gap-y-6 lg:flex-nowrap lg:gap-x-8">
+    {FRIENDS.map((f) => {
+      const logo = (
+        <img
+          src={f.logo}
+          alt={f.name}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-contain mix-blend-multiply"
+        />
+      );
 
-          return (
-            <li key={f.name} className="flex h-20 w-[42%] items-center justify-center sm:h-24 sm:w-[30%] lg:w-[18%]">
-              {f.url ? (
-                <a
-                  href={f.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={f.name}
-                  className="block h-full w-full"
-                >
-                  {logo}
-                </a>
-              ) : (
-                logo
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
+      return (
+        <li
+          key={f.name}
+          className="flex h-20 w-[42%] items-center justify-center rounded-xl bg-white p-3 ring-1 ring-line sm:h-24 sm:w-[30%] lg:w-[18%]"
+        >
+          {f.url ? (
+            <a
+              href={f.url}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={f.name}
+              className="block h-full w-full"
+            >
+              {logo}
+            </a>
+          ) : (
+            logo
+          )}
+        </li>
+      );
+    })}
+  </ul>
+</section>
       <Footer />
     </>
   );

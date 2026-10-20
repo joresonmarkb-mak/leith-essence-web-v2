@@ -5,6 +5,7 @@ import EditorialStory from "../components/EditorialStory.jsx";
 import Impressions from "../components/Impressions.jsx";
 import Community from "../components/Community.jsx";
 import Footer from "../components/Footer.jsx";
+import BottleSpecs from "../components/BottleSpecs.jsx";
 
 
 export default function Home() {
@@ -55,6 +56,7 @@ export default function Home() {
       </section>
       <TopChoices />
       <EditorialStory />
+      <BottleSpecs />
       <Impressions />
       <Community />
       <Footer />
