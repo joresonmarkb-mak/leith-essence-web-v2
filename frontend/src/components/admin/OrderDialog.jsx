@@ -4,6 +4,7 @@ import StatusPill from "../StatusPill.jsx";
 import { api } from "../../lib/api.js";
 import { peso, orderNo } from "../../lib/format.js";
 import { input, labelCls, btn, btnGhost, btnDanger, asList } from "./ui.js";
+import CopyDetailsButton from "./CopyDetailsButton.jsx";
 
 const PLATFORM = { website: "Website", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", shopee: "Shopee", events: "Events" };
 const PAYMENT = { gcash: "GCash", qrph: "QR Ph", cash: "Cash", other: "Other" };
@@ -60,13 +61,18 @@ function OrderDetail({ orderId, onChanged, onClose }) {
   const canPay = o.status === "pending";
   const canShip = o.status === "paid";
   const canCancel = o.status === "pending" || o.status === "paid";
+  
 
   return (
     <>
+    
       <div className="flex flex-wrap items-center gap-3">
         <span className="font-mono text-sm">{orderNo(o.id)}</span>
         <StatusPill status={o.status} />
         <span className="text-xs text-muted">{PLATFORM[o.platform]} · {o.type === "pickup" ? "Pickup" : "Shipping"}</span>
+         <div className="ml-auto">
+          <CopyDetailsButton order={o} />
+        </div>
       </div>
 
       <dl className="mt-4 flex flex-col">
@@ -74,6 +80,7 @@ function OrderDetail({ orderId, onChanged, onClose }) {
         {o.buyerPhone && <Row k="Phone">{o.buyerPhone}</Row>}
         {o.buyerEmail && <Row k="Email">{o.buyerEmail}</Row>}
         {address && <Row k="Address">{address}</Row>}
+        
         {o.notes && <Row k="Notes">{o.notes}</Row>}
         <Row k="Placed">{when(o.createdAt)}</Row>
         {o.paidAt && <Row k="Paid">{when(o.paidAt)}</Row>}
@@ -94,6 +101,7 @@ function OrderDetail({ orderId, onChanged, onClose }) {
               {(it.ownerName || it.batchName) && (
                 <p className="text-xs text-muted">{[it.batchName, it.ownerName].filter(Boolean).join(" · ")}</p>
               )}
+              
             </div>
             <p className="shrink-0 text-sm tabular-nums">{peso(it.quantity * it.unitPrice)}</p>
           </li>
