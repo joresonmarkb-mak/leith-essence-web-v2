@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../lib/api.js";
+import Navbar from "../context/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
 
 export default function Quiz() {
   const [questions, setQuestions] = useState(null);
@@ -65,7 +67,8 @@ export default function Quiz() {
   }
   const next = () => (index === last ? submit(answers) : setIndex(index + 1));
 
-  return (
+  return (<>
+    <Navbar />
     <div className="mx-auto flex min-h-[70dvh] max-w-3xl flex-col px-4 pb-16 pt-10 sm:px-6">
       <div className="text-center">
         <p className="text-[11px] uppercase tracking-widest text-muted">Question {index + 1} of {questions.length}</p>
@@ -124,6 +127,8 @@ export default function Quiz() {
         )}
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
 

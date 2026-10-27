@@ -1,6 +1,6 @@
 export const GCASH = {
   name: "James Von Escano",       // the account name buyers should see in GCash
-  number: "09454888915",     // your GCash number
+  number: "+63 952 456 6418",     // your GCash number
   qrImage: "/gcash-qr.jpg",
 };
 export const TOP_CHOICES = [

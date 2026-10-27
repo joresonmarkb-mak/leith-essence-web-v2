@@ -5,6 +5,7 @@ import { peso } from "../lib/format.js";
 import { GCASH } from "../lib/config.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { Copy, Check } from "lucide-react";
 
 const field = "w-full border-0 border-b border-line bg-transparent py-3 text-base outline-none transition focus:border-fg sm:text-sm";
 const label = "block text-xs text-muted";
@@ -15,7 +16,7 @@ export default function Checkout() {
   const { setCount } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [copied, setCopied] = useState(false);
   const [items, setItems] = useState(null);
   const [loadError, setLoadError] = useState("");
   const [totals, setTotals] = useState(null);
@@ -37,6 +38,15 @@ export default function Checkout() {
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const handleCopy = async () => {
+  try {
+    await navigator.clipboard.writeText(GCASH.number);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  } catch (error) {
+    console.error("Failed to copy GCash number:", error);
+  }
+  };
   // Which bag items are being bought
   useEffect(() => {
     let ignore = false;
@@ -250,7 +260,27 @@ export default function Checkout() {
 
           <div className="mt-5 flex flex-col items-center">
             <p className="text-sm">Send <strong>{peso(totals?.total)}</strong> to {GCASH.name}</p>
-            <p className="text-xs text-muted">{GCASH.number}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-muted">{GCASH.number}</p>
+
+              <button
+                onClick={handleCopy}
+                className="flex items-center gap-1 text-xs text-muted hover:text-primary transition-colors"
+                title="Copy GCash number"
+              >
+                {copied ? (
+                  <>
+                    <Check size={14} />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
             <img src={GCASH.qrImage} alt="GCash QR code" className="mt-3 w-full max-w-[240px]" />
           </div>
 

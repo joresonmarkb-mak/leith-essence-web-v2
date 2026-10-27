@@ -31,15 +31,18 @@ import Privacy from "./pages/Privacy.jsx";
 import Terms from "./pages/Terms.jsx";
 import Cookies from "./pages/Cookies.jsx";
 import AdminReviews from "./pages/admin/Reviews";
+import WakeUp from "./components/WakeUp.jsx";
 
 const NotFound = () => <p className="p-10 text-center text-muted">Page not found.</p>;
 
 export default function App() {
   return (<>
+  <WakeUp />
     <ScrollToHash />
     <Routes>
       
       <Route element={<Layout />}>
+      
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="*" element={<NotFound />} />
