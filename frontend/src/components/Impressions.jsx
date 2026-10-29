@@ -26,32 +26,42 @@ const REVIEWS = [
 
 export default function Impressions() {
   return (
-    <section aria-labelledby="impressions-title" className="mx-auto max-w-[1200px] px-4 py-16 sm:px-8 sm:py-24">
-      <header className="mb-10 text-center sm:mb-14">
-        <h2
-          id="impressions-title"
-          className="text-[length:clamp(1.6rem,4vw,2.6rem)] font-extrabold uppercase leading-none tracking-tight"
-        >
-          {HEADING}
-        </h2>
-        <p className="mt-2 font-mono text-[10px] uppercase tracking-wider sm:text-[11px]">{SUB}</p>
-      </header>
+  <section aria-labelledby="impressions-title" className="mx-auto max-w-[1200px] px-4 py-16 sm:px-8 sm:py-24">
+  <header className="mb-10 text-center sm:mb-14">
+    <h2
+      id="impressions-title"
+      className="text-[length:clamp(1.6rem,4vw,2.6rem)] font-extrabold uppercase leading-none tracking-tight"
+    >
+      {HEADING}
+    </h2>
+    <p className="mt-2 font-mono text-[10px] uppercase tracking-wider sm:text-[11px]">{SUB}</p>
+  </header>
 
-      <ul className="grid gap-1 sm:grid-cols-2 lg:grid-cols-4">
-        {REVIEWS.map((r) => (
-          <li key={r.name} className="flex">
-            <figure className="flex min-h-[18rem] flex-1 flex-col justify-between gap-10 bg-surface p-4 font-mono uppercase sm:p-5 lg:min-h-[21rem]">
-              <blockquote className="text-[15px] font-bold leading-tight sm:text-base lg:text-[clamp(0.8rem,1.35vw,1.1rem)]">
-                “{r.quote}”
-              </blockquote>
-              <figcaption className="ml-auto max-w-[16rem] text-right">
-                <p className="text-[10px] leading-snug tracking-wide sm:text-[11px]">{r.body}</p>
-                <p className="mt-4 text-[10px] sm:text-[11px]">-{r.name}</p>
-              </figcaption>
-            </figure>
-          </li>
-        ))}
-      </ul>
-    </section>
+  <ul
+    className="
+      -mx-4 flex snap-x snap-mandatory gap-1 overflow-x-auto px-4 pb-2
+      [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+      sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0
+      lg:grid-cols-4
+    "
+  >
+    {REVIEWS.map((r) => (
+      <li
+        key={r.name}
+        className="flex w-[calc((100%-0.25rem)/2)] shrink-0 snap-start sm:w-auto sm:shrink"
+      >
+        <figure className="flex min-h-[18rem] flex-1 flex-col justify-between gap-10 bg-surface p-4 font-mono uppercase sm:p-5 lg:min-h-[21rem]">
+          <blockquote className="text-[15px] font-bold leading-tight sm:text-base lg:text-[clamp(0.8rem,1.35vw,1.1rem)]">
+            “{r.quote}”
+          </blockquote>
+          <figcaption className="ml-auto max-w-[16rem] text-right">
+            <p className="text-[10px] leading-snug tracking-wide sm:text-[11px]">{r.body}</p>
+            <p className="mt-4 text-[10px] sm:text-[11px]">-{r.name}</p>
+          </figcaption>
+        </figure>
+      </li>
+    ))}
+  </ul>
+</section>
   );
 }

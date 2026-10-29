@@ -37,38 +37,40 @@ function Tags({ list, right = false }) {
 
 export default function EditorialStory() {
   return (
-    <section aria-labelledby="story-title" className="mx-auto max-w-[1200px] px-4 py-12 sm:px-8 sm:py-24">
-      <div className="grid gap-10 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 md:gap-x-6 md:gap-y-12">
-        {/* 1. Heading, small photo with text, mood words */}
-        <div className="flex flex-col justify-between gap-6 sm:gap-8">
-          <h2
-            id="story-title"
-            className="text-[length:clamp(1.9rem,3vw,3.2rem)] font-extrabold uppercase leading-[0.95] tracking-tight md:ml-[23%]"
-          >
-            {HEADING}
-          </h2>
-          <div className="flex items-end gap-4 sm:gap-5">
-            <Photo img={IMG.hand} className="aspect-[2/3] w-[34%] shrink-0 sm:w-[32%]" />
-            <p className={`${mono} max-w-[16rem]`}>{COPY}</p>
-          </div>
-          <Tags list={TAGS_LEFT} />
-        </div>
-
-        {/* 2. Large photo, words underneath */}
-        <div className="flex flex-col gap-3">
-          <Photo img={IMG.sunglasses} className="aspect-[24/25]" />
-          <Tags list={TAGS_RIGHT} right />
-        </div>
-
-        {/* 3. Large photo */}
-        <Photo img={IMG.portrait} className="aspect-[24/25]" />
-
-        {/* 4. Small photo, with the paragraph beside it on wider screens */}
-        <div className="flex items-end justify-end gap-4 sm:gap-5 md:pb-6">
-          <p className={`${mono} hidden max-w-[14rem] text-right sm:block`}>{COPY}</p>
-          <Photo img={IMG.necklace} className="aspect-[3/4] w-[42%] shrink-0 sm:w-[28%]" />
-        </div>
+<section aria-labelledby="story-title" className="mx-auto max-w-[1200px] px-4 py-12 sm:px-8 sm:py-24">
+  <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:gap-x-6 md:gap-y-12">
+    {/* 1. Heading, small photo with text, mood words */}
+    <div className="col-span-2 flex flex-col justify-between gap-5 sm:col-span-1 sm:gap-8">
+      <h2
+        id="story-title"
+        className="text-[length:clamp(1.9rem,9vw,2.6rem)] font-extrabold uppercase leading-[0.95] tracking-tight sm:text-[length:clamp(1.9rem,3vw,3.2rem)] md:ml-[23%]"
+      >
+        {HEADING}
+      </h2>
+      <div className="flex items-end gap-4 sm:gap-5">
+        <Photo img={IMG.hand} className="aspect-[2/3] w-[34%] shrink-0 sm:w-[32%]" />
+        <p className={`${mono} max-w-[16rem]`}>{COPY}</p>
       </div>
-    </section>
+      <Tags list={TAGS_LEFT} />
+    </div>
+
+    {/* 2. Large photo, words underneath */}
+    <div className="col-span-1 flex flex-col gap-2 sm:gap-3">
+      <Photo img={IMG.sunglasses} className="aspect-[4/5] sm:aspect-[24/25]" />
+      <Tags list={TAGS_RIGHT} right />
+    </div>
+
+    {/* 3. Large photo */}
+    <div className="col-span-1">
+      <Photo img={IMG.portrait} className="aspect-[4/5] sm:aspect-[24/25]" />
+    </div>
+
+    {/* 4. Small photo, with the paragraph beside it on wider screens */}
+    <div className="col-span-2 flex items-end justify-end gap-4 sm:col-span-1 sm:gap-5 md:pb-6">
+      <p className={`${mono} hidden max-w-[14rem] text-right sm:block`}>{COPY}</p>
+      <Photo img={IMG.necklace} className="aspect-[3/4] w-[50%] shrink-0 sm:w-[28%]" />
+    </div>
+  </div>
+</section>
   );
 }
