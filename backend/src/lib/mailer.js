@@ -7,11 +7,11 @@ export const mailerReady = () =>
 
 function get() {
   if (!transporter) {
-    const port = Number(process.env.SMTP_PORT || 465);
+    const port = Number(process.env.SMTP_PORT || 2525);
     transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port,
-      secure: port === 465,
+      secure: port === 2525,
       auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     });
   }
