@@ -6,6 +6,9 @@ import { GCASH } from "../lib/config.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
 import { Copy, Check } from "lucide-react";
+import Navbar from "../context/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
+import { ArrowLeft } from "lucide-react";
 
 const field = "w-full border-0 border-b border-line bg-transparent py-3 text-base outline-none transition focus:border-fg sm:text-sm";
 const label = "block text-xs text-muted";
@@ -16,6 +19,7 @@ export default function Checkout() {
   const { setCount } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
+  const goBack = () => (location.key !== "default" ? navigate(-1) : navigate("/cart"));
   const [copied, setCopied] = useState(false);
   const [items, setItems] = useState(null);
   const [loadError, setLoadError] = useState("");
@@ -174,8 +178,18 @@ export default function Checkout() {
       </label>
     ));
 
-  return (
-    <form onSubmit={onSubmit} className="mx-auto max-w-[1100px] px-4 pb-16 pt-8 sm:px-6">
+  return (<>
+  <Navbar />
+      <form onSubmit={onSubmit} className="mx-auto max-w-[1100px] px-4 pb-16 pt-8 sm:px-6">
+          <button
+            type="button"
+            onClick={goBack}
+            className="-ml-2 mb-3 inline-flex min-h-11 items-center gap-1.5 px-2 text-[11px] font-semibold uppercase tracking-wide text-muted transition hover:text-fg"
+          >
+            <ArrowLeft size={16} aria-hidden="true" />
+            Back to bag
+          </button>
+      
       <h1 className="text-4xl font-bold uppercase tracking-tight sm:text-6xl">Checkout</h1>
 
       <div className="mt-8 grid gap-x-16 gap-y-10 lg:grid-cols-2">
@@ -306,10 +320,10 @@ export default function Checkout() {
           </label>
           {uploadError && <p role="alert" className="mt-1 text-xs text-danger">{uploadError}</p>}
 
-          <label className={`${label} mt-5`}>
+          {/* <label className={`${label} mt-5`}>
             GCash reference number
             <input required inputMode="numeric" value={reference} onChange={(e) => setReference(e.target.value)} className={field} />
-          </label>
+          </label> */}
 
           {error && <p role="alert" className="mt-4 text-sm text-danger">{error}</p>}
           <button
@@ -321,5 +335,7 @@ export default function Checkout() {
         </section>
       </div>
     </form>
+    <Footer />
+    </>
   );
 }

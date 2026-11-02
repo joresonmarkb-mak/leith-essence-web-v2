@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { peso } from "../lib/format.js";
 import { useCart } from "../context/CartContext.jsx";
 import QtyStepper from "../components/QtyStepper.jsx";
+import Navbar from "../context/Navbar.jsx";
+import { ArrowLeft } from "lucide-react";
 
 const CATEGORY_LABEL = { for_him: "For him", for_her: "For her", unisex: "Unisex" };
 const floz = (ml) => (ml * 0.033814).toFixed(2);
@@ -11,6 +13,8 @@ const floz = (ml) => (ml * 0.033814).toFixed(2);
 export default function Cart() {
   const { setCount } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+  const goBack = () => (location.key !== "default" ? navigate(-1) : navigate("/shop"));
   const [cart, setCart] = useState(null);
   const [error, setError] = useState("");
   const [unchecked, setUnchecked] = useState(() => new Set());
@@ -57,8 +61,20 @@ export default function Cart() {
   const subtotal = checked.reduce((s, i) => s + Number(i.lineTotal), 0);
 
   return (
-    <div className="mx-auto max-w-2xl px-4 pb-0 pt-8 sm:px-6">
+    <>
+    <Navbar />
+    
+      <div className="mx-auto max-w-2xl px-4 pb-0 pt-8 sm:px-6">
+      <button
+        type="button"
+        onClick={goBack}
+        className="-ml-2 mb-2 inline-flex min-h-11 items-center gap-1.5 px-2 text-[11px] font-semibold uppercase tracking-wide text-muted transition hover:text-fg"
+      >
+        <ArrowLeft size={16} aria-hidden="true" />
+        Back
+      </button>
       <h1 className="text-xl font-semibold">Shopping Bag ({cart.count})</h1>
+    
       {error && <p role="alert" className="mt-3 text-sm text-danger">{error}</p>}
 
       {cart.items.length === 0 ? (
@@ -132,5 +148,7 @@ export default function Cart() {
         </>
       )}
     </div>
+   
+    </>
   );
 }
